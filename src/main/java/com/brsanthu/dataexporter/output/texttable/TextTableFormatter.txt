@@ -1,0 +1,254 @@
+package com.brsanthu.dataexporter.output.texttable;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.brsanthu.dataexporter.model.CellDetails;
+import com.brsanthu.dataexporter.model.Column;
+import com.brsanthu.dataexporter.model.Row;
+import com.brsanthu.dataexporter.model.StringColumn;
+
+import static com.brsanthu.dataexporter.util.Util.*;
+
+/**
+ * Main workhorse of the library, which formats the headers, rows and constructs the
+ * list of Strings.
+ * 
+ * @author Santhosh Kumar
+ */
+public class TextTableFormatter {
+    
+    private List<Column> columns = null;
+    private TextTableExportOptions options = null;
+    private TextTableExportSyle style = null;
+    private PrintStream out = null;
+    
+    public TextTableFormatter(TextTableExportOptions options, List<Column> columns, PrintStream out) {
+        super();
+        this.options = options;
+        this.style = options.getStyle();
+        this.columns = columns;
+        this.out = out;
+    }
+    
+    public void renderHeader() {
+        
+        if (options.isPrintHeaders()) {
+            //Render the top border
+            renderTopBorder();
+            
+            //Format header into multiple lines and render with dividers and separators.
+            renderHeaderCells(formatHeaderCells());
+        }
+        
+        //Render the top border
+        renderTopDownBorder();
+    }
+
+    public void renderTopBorder() {
+        renderLine(style.getTopLeftIntersection(), style.getTopRightIntersection(), 
+            style.getTopCenterIntersection(), style.getTopRightLeftIntersection(), 
+            style.getTopRightIntersection(), style.getTopBorder());
+    }
+
+    public void renderHeaderCells(List<List<String>> headerLines) {
+        renderLine(style.getTopLeftDivider(), style.getTopRightDivider(), style.getTopCenterDivider(), 
+            style.getTopRightLeftDivider(), style.getTopRightDivider(), headerLines);
+    }
+
+    public void renderTopDownBorder() {
+        renderLine(style.getTopDownLeftIntersection(), style.getTopDownRightIntersection(), 
+            style.getTopDownCenterIntersection(), style.getTopDownRightLeftIntersection(), 
+            style.getTopDownRightIntersection(), style.getTopDownBorder());
+    }
+
+    public void renderBottomBorder() {
+        renderLine(style.getBottomLeftIntersection(), style.getBottomRightIntersection(), 
+            style.getBottomCenterIntersection(), style.getBottomRightLeftIntersection(), 
+            style.getBottomRightIntersection(), style.getBottomBorder());
+    }
+
+    public void renderBlankLine() {
+        renderLine(" ", " ", " ", " ", " ", " ");
+    }
+
+    public void renderRowBorder() {
+        renderLine(style.getCenterLeftIntersection(), style.getCenterRightIntersection(), 
+            style.getCenterCenterIntersection(), style.getCenterRightLeftIntersection(), 
+            style.getCenterRightIntersection(), style.getCenterBorder());
+    }
+
+    public void renderLine(String left, String leftRight, String center, 
+                    String rightLeft, String right, List<List<String>> cells) {
+        for (List<String> rowLine : cells) {
+            renderLine(left, leftRight, center, rightLeft, right, rowLine, null);
+        }
+    }
+
+    public void renderLine(String left, String leftRight, String center, 
+                    String rightLeft, String right, String border) {
+        renderLine(left, leftRight, center, rightLeft, right, null, border);
+    }
+
+    public void renderLine(String left, String leftRight, String center, 
+                    String rightLeft, String right, List<String> cellValues, String defaultValue) {
+        
+        if ("".equalsIgnoreCase(defaultValue)) {
+            defaultValue = " ";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        
+        //Render left intersection
+        sb.append(left);
+        
+        for (int i = 0; i < columns.size(); i++) {
+            //Render the first column width using border char
+            sb.append(cellValues!=null?cellValues.get(i):createString(defaultValue, columns.get(i).getWidth()));
+            
+            if (i == columns.size() - 1) {
+                //Last column so print the right intersection
+                sb.append(right);
+                
+            } else if (i == 0) {
+                //If there are two columns, print the left right column and then right column
+                sb.append(leftRight);
+
+            } else if (i == columns.size() - 2) {
+                //If there are three columns, print the left right column and then right column
+                sb.append(rightLeft);
+                
+            } else {
+                sb.append(center);
+            }
+        }
+
+        //If trimmed buffer is empty, just skip the line.
+        if (sb.toString().trim().length() != 0) {
+            out.print(sb.toString());
+            renderNewline();
+        }
+    }
+    
+    public void renderNewline() {
+        out.println();
+        out.flush();
+    }
+    
+    public void renderRow(int rowIndex, Row row) {
+
+        //Format the row into cells
+        List<List<String>> rowCells = formatRowCells(rowIndex, row);
+        
+        //Render left row divider
+        renderLine(style.getCenterLeftDivider(), style.getCenterLeftRightDivider(), 
+            style.getCenterCenterDivider(), style.getCenterRightLeftDivider(), 
+            style.getCenterRightDivider(), rowCells);
+    }
+    
+    public List<List<String>> formatHeaderCells() {
+        
+        StringColumn dummyColumn = new StringColumn("Test", 0);
+        int maxHeaderHeight = 0;
+        for (Column column : columns) {
+            maxHeaderHeight = Math.max(maxHeaderHeight, dummyColumn.getMaxRowHeight(getHeaderCellDetails(column)));
+        }
+
+        //Init the header lines array which would store the formatted/aligned strings
+        List<List<String>> headerLines = new ArrayList<List<String>>();
+        for (int j = 0; j < maxHeaderHeight; j++) {
+            headerLines.add(new ArrayList<String>());
+        }
+        
+        for (int i = 0; i < columns.size(); i++) {
+            
+            Column column = columns.get(i);
+            
+            CellDetails cellDetails = getHeaderCellDetails(column);
+            
+            List<String> cells = dummyColumn.align(cellDetails, dummyColumn.format(getHeaderCellDetails(column)));
+            
+            for (int j = 0; j < maxHeaderHeight; j++) {
+                headerLines.get(j).add(cells.get(j));
+            }
+        }
+        
+        return headerLines;
+    }
+    
+    private CellDetails getHeaderCellDetails(Column column) {
+        CellDetails cellDetails = new CellDetails();
+        
+        StringColumn headerColumn = new StringColumn("Header", 0);
+        headerColumn.setWidth(column.getWidth());
+        cellDetails.setColumnIndex(cellDetails.getColumnIndex()+1);
+        cellDetails.setColumn(headerColumn);
+        cellDetails.setCellValue(column.getTitle());
+        cellDetails.getColumn().setAlign(options.getHeaderAlignment());
+
+        return cellDetails;
+    }
+    
+    public List<List<String>> formatRowCells(int rowIndex, Row row) {
+        
+        int maxRowHeight = Math.max(options.getMinRowHeight(), getMaxRowHeight(columns, rowIndex, row));
+        int skippedColumns = 0;
+        
+        List<List<String>> rowLines = new ArrayList<List<String>>();
+        for (int j = 0; j < maxRowHeight; j++) {
+            rowLines.add(new ArrayList<String>());
+        }
+
+        for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
+            Column column = columns.get(columnIndex);
+            
+            Object cellValue = null;
+            if (column.isGeneratesOwnData()) {
+                if (column.getCallback() == null) {
+                    throw new RuntimeException("Column " + column +  " is configured as own data generator but callback is not configured.");
+                }
+                cellValue = column.getCallback().getCellValue(rowIndex, columnIndex, column.getName(), row, null);
+                skippedColumns++;
+            } else {
+                cellValue = row.getCellValue(columnIndex - skippedColumns, column.getName());
+                if (column.getCallback() != null) {
+                    cellValue = column.getCallback().getCellValue(rowIndex, columnIndex, column.getName(), row, cellValue);
+                }
+            }
+            
+            List<String> cells = column.format(rowIndex, columnIndex, maxRowHeight, cellValue);
+            for (int j = 0; j < maxRowHeight; j++) {
+                rowLines.get(j).add(cells.get(j));
+            }
+        }
+        
+        return rowLines;
+    }
+    
+    public int getMaxRowHeight(List<Column> columns, int rowIndex, Row row) {
+        int height = 0;
+        
+        int skippedColumns = 0;
+        for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
+            Column column = columns.get(columnIndex);
+            Object cellValue = null;
+            if (column.isGeneratesOwnData()) {
+                if (column.getCallback() == null) {
+                    throw new RuntimeException("Column " + column +  " configured as own data generator but callback is not configured.");
+                }
+                cellValue = column.getCallback().getCellValue(rowIndex, columnIndex, column.getName(), row, null);
+                skippedColumns++;
+            } else {
+                cellValue = row.getCellValue(columnIndex - skippedColumns, column.getName());
+                if (column.getCallback() != null) {
+                    cellValue = column.getCallback().getCellValue(rowIndex, columnIndex, column.getName(), row, cellValue);
+                }
+            }
+            
+            height = Math.max(height, column.getMaxRowHeight(rowIndex, columnIndex, cellValue));
+        }
+        
+        return height;
+    }
+}

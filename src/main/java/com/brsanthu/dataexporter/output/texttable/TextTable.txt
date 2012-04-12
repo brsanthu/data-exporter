@@ -1,0 +1,240 @@
+package com.brsanthu.dataexporter.output.texttable;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.brsanthu.dataexporter.model.BeanRow;
+import com.brsanthu.dataexporter.model.CellCallback;
+import com.brsanthu.dataexporter.model.Column;
+import com.brsanthu.dataexporter.model.Footer;
+import com.brsanthu.dataexporter.model.Row;
+import com.brsanthu.dataexporter.model.RowCallback;
+import com.brsanthu.dataexporter.model.RowDetails;
+
+/**
+ * Pojo to holds the columns and rows data. Use the {@link #addColumn(Column...)} and {@link #addRow(List)}
+ * methods to add the columns, rows.
+ * 
+ * Note that <code>addColumn</code> and <code>addRow</code> method supports multiple objects.
+ * 
+ * @author Santhosh Kumar
+ */
+public class TextTable {
+    
+    private CellCallback defaultCellCallback = null;
+    private RowCallback rowCallback = null;
+    private TextTableFormatter formatter = null;
+    private TextTableExportOptions options = new TextTableExportOptions();
+    private List<Column> columns = new ArrayList<Column>();    
+    private List<Footer> footers = new ArrayList<Footer>();    
+    private PrintStream out = null;
+    private boolean skipRowBorder = false;
+    private RowDetails rowDetails = new RowDetails();
+    
+    /**
+     * Flag to indicate if we have started streaming. Once streaming
+     * started, new columns cannot be added.
+     */
+    private boolean startedRendering = false;
+    
+    public TextTable() {
+        this.out = System.out;
+    }
+
+    public TextTable(Column... columns) {
+        this(System.out, columns);
+    }
+
+    public TextTable(PrintStream out, Column... columns) {
+        this.out = new TextTablePrintStream(options, out);
+        addColumn(columns);
+    }
+
+    public TextTable(Column column, Row rows) {
+        this(System.out, column, rows);
+    }
+    
+    public TextTable(PrintStream out, Column column, Row rows) {
+        this.out = new TextTablePrintStream(options, out);
+        addColumn(column);
+        addRow(rows);
+    }
+    
+    public CellCallback getDefaultCellCallback() {
+        return defaultCellCallback;
+    }
+
+    public void setDefaultCellCallback(CellCallback defaultCellCallback) {
+        this.defaultCellCallback = defaultCellCallback;
+    }
+
+    public RowCallback getRowCallback() {
+        return rowCallback;
+    }
+
+    public void setRowCallback(RowCallback rowCallback) {
+        this.rowCallback = rowCallback;
+    }
+
+    /**
+     * Returns the current options instance. Never returns <code>null</code>.
+     * 
+     * @return current options instance.
+     */
+    public TextTableExportOptions getOptions() {
+        return options;
+    }
+    
+    /**
+     * Sets the new instance of {@link TextTableExportOptions}. Argument cannot be <code>null</code>.
+     * 
+     * @param options
+     */
+    public void setOptions(TextTableExportOptions options) {
+        if (options == null) {
+            throw new IllegalArgumentException("Options cannot be null");
+        }
+        this.options = options;
+    }
+
+    public TextTable addFooter(Footer... footers) {
+        if (footers == null) {
+            throw new IllegalArgumentException("Parameter columns cannot be null");
+        }
+        
+        for (Footer footer : footers) {
+            this.footers.add(footer);
+        }
+        
+        return this;
+    }
+    
+    
+    public TextTable addColumn(Column... columns) {
+        if (startedRendering) {
+            throw new IllegalStateException("TextTable has already started streaming and hence new columns cannot be added.");
+        }
+        
+        if (columns == null) {
+            throw new IllegalArgumentException("Parameter columns cannot be null");
+        }
+        
+        for (Column column : columns) {
+            this.columns.add(column);
+        }
+        
+        return this;
+    }
+
+    public TextTable addBeanRow(Object... beans) {
+        for (Object object : beans) {
+            addRow(new BeanRow(object));
+        }
+        
+        return this;
+    }
+
+    public TextTable addBeanRows(List beans) {
+        for (Object bean : beans) {
+            addRow(new BeanRow(bean));
+        }
+        
+        return this;
+    }
+
+    public TextTable addRow(Row... rows) {
+        if (rows == null) {
+            throw new IllegalArgumentException("Parameter rows cannot be null");
+        }
+        
+        startRendering();
+        
+        for (Row row : rows) {
+            renderRow(row);
+        }
+
+        return this;
+    }
+
+    private void renderRow(Row row) {
+        int rowIndex = rowDetails.getRowIndex();
+        
+        if (rowIndex != 0 && options.getRepeatHeadersAfterRows() > 0 && rowIndex % options.getRepeatHeadersAfterRows() == 0) {
+            if (options.isSplitTableAtRepeat()) {
+                formatter.renderBottomBorder();
+                formatter.renderBlankLine();
+            }
+            
+            formatter.renderHeader();
+            skipRowBorder = true;
+        }
+        
+        //Call the row callback
+        if (rowCallback != null) {
+            row = rowCallback.beforeRendering(rowIndex, row);
+        }
+        
+        //Call footers
+        for (Footer footer : footers) {
+            footer.beforeRendering(rowIndex, row);
+        }
+
+        //Add row border if it is not asked to be skipped
+        if (!skipRowBorder) {
+            formatter.renderRowBorder();
+        }
+        
+        //Render the row
+        formatter.renderRow(rowIndex, row);
+        
+        //Call the row callback
+        if (rowCallback != null) {
+            rowCallback.aftreRendering(rowIndex, row);
+        }
+        for (Footer footer : footers) {
+            footer.aftreRendering(rowIndex, row);
+        }
+
+        skipRowBorder = false;
+        rowIndex++;
+    }
+
+    public TextTable addRow(List<? extends Object> rowValues) {
+        addRow(new Row(rowValues));
+        return this;
+    }
+
+    public TextTable addRow(Object... rowValues) {
+        addRow(new Row(rowValues));
+        return this;
+    }
+
+    public List<Column> getColumns() {
+        return columns;
+    }
+    
+    public void startRendering() {
+        
+        if (startedRendering) {
+            return;
+        }
+        
+        formatter = new TextTableFormatter(options, columns, out);
+        
+        //Render the header
+        formatter.renderHeader();
+        
+        startedRendering = true;
+        skipRowBorder = true;
+    }
+    
+    /**
+     * If TextTable is in streaming mode, this method must be called to finish the
+     * final borders. After this any new rows added, would create new TextTable.
+     */
+    public void finishRendering() {
+        //Render the final border
+        formatter.renderBottomBorder();
+    }
+}

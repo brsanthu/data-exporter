@@ -1,0 +1,47 @@
+<html>
+	<head><meta content="text/html;charset=UTF-8"/></head>
+	<body>
+		<table border=1>
+			<tr>
+				<th>Line No</th>
+				<th>Date Purchased</th>
+				<th>Item No</th>
+				<th>Item Name</th>
+				<th>Shipped?</th>
+				<th>Quantity</th>
+				<th>Unit Price</th>
+				<th>Price</th>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2011/04/21 11:34:40 AM</td>
+				<td>1</td>
+				<td>Laptop</td>
+				<td>No</td>
+				<td>1</td>
+				<td>$799.78</td>
+				<td>$799.78</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>2011/04/18 07:47:16 PM</td>
+				<td>2</td>
+				<td>Mouse</td>
+				<td>Yes</td>
+				<td>2</td>
+				<td>$49.30</td>
+				<td>$98.60</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>2011/04/18 07:13:14 PM</td>
+				<td>3</td>
+				<td>Keyboard</td>
+				<td>No</td>
+				<td>5</td>
+				<td>$75.00</td>
+				<td>$375.00</td>
+			</tr>
+		</table>
+	</body>
+</html>

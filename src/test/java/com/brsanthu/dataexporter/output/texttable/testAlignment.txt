@@ -1,0 +1,28 @@
++===============+===============+===============+===============+
+|               |     LEFT      |    CENTER     |     RIGHT     |
++===============+===============+===============+===============+
+|               |This is        |    This is    |        This is|
+|               |alignment test |alignment test | alignment test|
+|               |with some      |   with some   |      with some|
+|      TOP      |reallyreallybig|reallyreallybig|reallyreallybig|
+|               |words          |     words     |          words|
+|               |               |               |               |
+|               |               |               |               |
+|               |               |               |               |
+|               |               |               |               |
+|               |This           |     This      |           This|
+|               |is alignment   | is alignment  |   is alignment|
+|    MIDDLE     |test with      |   test with   |      test with|
+|               |some           |     some      |           some|
+|               |reallyreallybig|reallyreallybig|reallyreallybig|
+|               |words          |     words     |          words|
+|               |               |               |               |
+|               |               |               |               |
+|               |               |               |               |
+|               |               |               |               |
+|    BOTTOM     |This           |     This      |           This|
+|               |is alignment   | is alignment  |   is alignment|
+|               |test with some |test with some | test with some|
+|               |reallyreallybig|reallyreallybig|reallyreallybig|
+|               |words          |     words     |          words|
++===============+===============+===============+===============+

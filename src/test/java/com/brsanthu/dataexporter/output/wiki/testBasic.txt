@@ -1,0 +1,4 @@
+||Line No||Date Purchased||Item No||Item Name||Shipped?||Quantity||Unit Price||Price||
+||1||2011/04/21 11:34:40 AM||1||Laptop||No||1||$799.78||$799.78||
+||2||2011/04/18 07:47:16 PM||2||Mouse||Yes||2||$49.30||$98.60||
+||3||2011/04/18 07:13:14 PM||3||Keyboard||No||5||$75.00||$375.00||
