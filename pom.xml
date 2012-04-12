@@ -5,6 +5,7 @@
 	<artifactId>data-exporter</artifactId>
 	<name>Data Exporter</name>
 	<version>1.0.1</version>
+	<description>Data Exporter description</description>
 	<url>http://code.google.com/p/data-exporter/</url>
 	<build>
 		<plugins>
