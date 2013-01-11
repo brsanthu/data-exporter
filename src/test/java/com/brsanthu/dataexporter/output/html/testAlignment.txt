@@ -1,0 +1,31 @@
+<html>
+	<head><meta content="text/html;charset=UTF-8"/></head>
+	<body>
+		<table border=1>
+			<tr>
+				<th></th>
+				<th>LEFT</th>
+				<th>CENTER</th>
+				<th>RIGHT</th>
+			</tr>
+			<tr>
+				<td style="text-align:center;vertical-align:middle">TOP</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+			</tr>
+			<tr>
+				<td style="text-align:center;vertical-align:middle">MIDDLE</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+			</tr>
+			<tr>
+				<td style="text-align:center;vertical-align:middle">BOTTOM</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+				<td style="text-align:left;vertical-align:middle">This is alignment test with some reallyreallybig words</td>
+			</tr>
+		</table>
+	</body>
+</html>

@@ -147,6 +147,7 @@ public abstract class DataWriter {
         for (int columnIndex = 0; columnIndex < rowDetails.getTable().getColumns().size(); columnIndex++) {
             CellDetails cellDetails = new CellDetails(rowDetails, columnIndex);
             cellDetails.setCellValue(rowDetails.getRow().getCellValue(cellDetails));
+            cellDetails.setCellValue(rowDetails.getRow().getCellValue(cellDetails));
             
             if (callback != null) {
                 callback.beforeCell(cellDetails);

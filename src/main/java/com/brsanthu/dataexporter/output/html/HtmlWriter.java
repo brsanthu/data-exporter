@@ -6,6 +6,7 @@ import java.io.Writer;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.brsanthu.dataexporter.AbstractDataWriter;
+import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.CellDetails;
 import com.brsanthu.dataexporter.model.HeaderCellDetails;
 import com.brsanthu.dataexporter.model.RowDetails;
@@ -85,7 +86,15 @@ public class HtmlWriter extends AbstractDataWriter {
     @Override
     public void beforeRowCell(CellDetails cellDetails) {
         prettyPrint(4);
-        print("<td>");
+        
+        if (getHtmlExportOptions().isAlignCells()) {
+	        AlignType alignType = cellDetails.getColumn().getAlign();
+	        
+	        String style = "text-align:" + alignType.getHorizontalAlignment() + ";vertical-align:" + alignType.getVerticalAlignment();
+	        print("<td style=\""+ style + "\">");
+        } else {
+        	print("<td>");
+        }
     }
     
     @Override

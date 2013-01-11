@@ -5,7 +5,8 @@ import com.brsanthu.dataexporter.ExportOptions;
 public class HtmlExportOptions extends ExportOptions {
     
     private boolean prettyPrint = false;
-
+    private boolean alignCells = true;
+    
     public boolean isPrettyPrint() {
         return prettyPrint;
     }
@@ -15,5 +16,12 @@ public class HtmlExportOptions extends ExportOptions {
         return this;
     }
 
+	public boolean isAlignCells() {
+		return alignCells;
+	}
+
+	public void setAlignCells(boolean alignCells) {
+		this.alignCells = alignCells;
+	}
     
 }

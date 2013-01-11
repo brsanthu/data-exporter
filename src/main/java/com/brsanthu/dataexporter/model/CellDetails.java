@@ -12,14 +12,17 @@ public class CellDetails extends RowDetails {
     }
     
     public CellDetails (RowDetails rowDetails, int columnIndex) {
+        this.columnIndex = columnIndex;
         setTable(rowDetails.getTable());
         setRow(rowDetails.getRow());
         setRowHeight(rowDetails.getRowHeight());
         setRowIndex(rowDetails.getRowIndex());
-        this.columnIndex = columnIndex;
     }
     
     public AlignType getCellAlign() {
+    	if (cellAlign == null) {
+    		cellAlign = getColumn().getAlign();
+    	}
         return cellAlign;
     }
 
