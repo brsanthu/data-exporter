@@ -253,7 +253,7 @@ public class TextTableWriter extends AbstractDataWriter {
             if (align == null) {
                 align = column.getAlign();
             }
-            
+
             List<String> cells = Column.align(column.getWidth(), maxHeaderHeight, align, column.getTitle());
             for (int j = 0; j < maxHeaderHeight; j++) {
                 headerLines.get(j).add(cells.get(j));

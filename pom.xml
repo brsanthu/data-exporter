@@ -3,10 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.brsanthu</groupId>
 	<artifactId>data-exporter</artifactId>
-	<name>Data Exporter</name>
-	<version>1.0.2</version>
-	<description>Data Exporter description.</description>
-	<url>http://code.google.com/p/data-exporter/</url>
+	<name>data-exporter</name>
+	<version>1.0.3</version>
+	<url>https://github.com/brsanthu/data-exporter</url>
 	<build>
 		<plugins>
 			<plugin>
@@ -95,4 +94,16 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<description>data-exporter is a Java library to export the tabular data (like List of rows) into many output formats. As of latest release, this library supports following formats.</description>
+	<organization>
+		<name>Santhosh Kumar</name>
+		<url>www.brsanthu.com</url>
+	</organization>
+	<issueManagement>
+		<system>github.com</system>
+		<url>https://javaserverfaces.dev.java.net/servlets/ProjectIssues</url>
+	</issueManagement>
+	<scm>
+		<url>https://github.com/brsanthu/data-exporter.git</url>
+	</scm>
 </project>

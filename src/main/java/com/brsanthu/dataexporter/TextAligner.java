@@ -150,6 +150,10 @@ public class TextAligner {
      * @return returns the ArrayList of Strings, corresponding to aligned lines.
      */
     public List<String> align(int width, int height, AlignType align, String data) {
+    	return align(width, height, align, data, " ");
+    }
+
+	public List<String> align(int width, int height, AlignType align, String data, String space) {
         
         if (height <= 0 || width <= 0) {
             throw new IllegalArgumentException("Height or width cannot be less than or equal to zero.");

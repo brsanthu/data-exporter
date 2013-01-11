@@ -58,8 +58,13 @@ public class XmlWriter extends AbstractDataWriter {
     @Override
     public void writeRowCell(CellDetails cellDetails) {
         prettyPrint(2);
-        print("<column name=\"" + cellDetails.getColumn().getTitle() + "\">" + 
-            StringEscapeUtils.escapeXml(cellDetails.getColumn().format(cellDetails)) +"</column>");
+        String title = cellDetails.getColumn().getTitle();
+        String title2 = cellDetails.getColumn().getTitle2();
+        String title3 = cellDetails.getColumn().getTitle3();
+        String name = title + (!"".equals(title2) ? " " + title2 : "") + (!"".equals(title3) ? " " + title3 : "");
+        String cellValue = StringEscapeUtils.escapeXml(cellDetails.getColumn().format(cellDetails));
+        String nil = cellDetails.getColumn().isNillable() && "".equals(cellValue) ? " xsi:nil=\"true\"" : "";
+        print("<column name=\"" + name + "\"" + nil + ">" + cellValue + "</column>");
     }
     
     @Override

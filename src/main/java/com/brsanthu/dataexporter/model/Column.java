@@ -15,11 +15,22 @@ public abstract class Column {
     
     private CellValueGenerator cellValueGenerator = null;
     private String title = null;
+    private String title2 = "";
+    private String title3 = "";
     private String name = null;
     private int width = 0;
     private AlignType align = null;
     private boolean generatesOwnData = false;
+    private boolean nillable = false;
 
+    protected String headerCellCssClass = null;
+    protected String headerCellCssId = null;
+    protected String headerCellCssStyle = null;
+    protected String rowCellCssClass = null;
+    protected String rowCellCssId = null;
+    protected String rowCellCssStyle = null;
+
+    
     public Column(String name) {
         this(name, name.length());
     }
@@ -34,7 +45,6 @@ public abstract class Column {
 
     public Column(String name, String title, int width, AlignType align) {
         super();
-        
         this.title = title==null?name:title;
         this.name = name;
         this.width = width;
@@ -47,7 +57,6 @@ public abstract class Column {
 
     public Column setCellValueGenerator(CellValueGenerator generator) {
         this.cellValueGenerator = generator;
-        
         return this;
     }
 
@@ -57,7 +66,6 @@ public abstract class Column {
 
     public Column setGeneratesOwnData(boolean generatesOwnData) {
         this.generatesOwnData = generatesOwnData;
-        
         return this;
     }
     
@@ -67,6 +75,22 @@ public abstract class Column {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTitle2() {
+        return title2;
+    }
+
+    public void setTitle2(String title2) {
+        this.title2 = title2;
+    }
+
+    public String getTitle3() {
+        return title3;
+    }
+
+    public void setTitle3(String title3) {
+        this.title3 = title3;
     }
 
     public String getName() {
@@ -92,6 +116,62 @@ public abstract class Column {
     public void setAlign(AlignType align) {
         this.align = align;
     }
+
+    public String getHeaderCellCssClass() {
+        return headerCellCssClass;
+    }
+
+    public void setHeaderCellCssClass(String headerCellCssClass) {
+        this.headerCellCssClass = headerCellCssClass;
+    }
+
+    public String getHeaderCellCssId() {
+        return headerCellCssId;
+    }
+
+    public void setHeaderCellCssId(String headerCellCssId) {
+        this.headerCellCssId = headerCellCssId;
+    }
+
+    public String getHeaderCellCssStyle() {
+        return headerCellCssStyle;
+    }
+
+    public void setHeaderCellCssStyle(String headerCellCssStyle) {
+        this.headerCellCssStyle = headerCellCssStyle;
+    }
+
+    public String getRowCellCssClass() {
+        return rowCellCssClass;
+    }
+
+    public void setRowCellCssClass(String rowCellCssClass) {
+        this.rowCellCssClass = rowCellCssClass;
+    }
+
+    public String getRowCellCssId() {
+        return rowCellCssId;
+    }
+
+    public void setRowCellCssId(String rowCellCssId) {
+        this.rowCellCssId = rowCellCssId;
+    }
+
+    public String getRowCellCssStyle() {
+        return rowCellCssStyle;
+    }
+
+    public void setRowCellCssStyle(String rowCellCssStyle) {
+        this.rowCellCssStyle = rowCellCssStyle;
+    }
+
+    public boolean isNillable() {
+        return nillable;
+    }
+
+    public void setNillable(boolean nillable) {
+        this.nillable = nillable;
+    }
     
     /**
      * Aligns the given <code>cellData</code> using the details given in <code>cellDetails</code>
@@ -102,10 +182,16 @@ public abstract class Column {
      * 
      * @param cellDetails the object containing the details about this cell
      * @param cellData the string which should be aligned
+	 * @param space the space character to use when aligning
      * 
      * @return the <code>ArrayList</code> containing the Strings split and aligned as per <code>cellDetails</code>
      */
+    
     public List<String> align(CellDetails cellDetails, String cellData) {
+    	return align(cellDetails, cellData, " ");
+    }
+    	
+    public List<String> align(CellDetails cellDetails, String cellData, String space) {
         
         AlignType alignOverride = cellDetails.getCellAlign();
         
@@ -113,11 +199,15 @@ public abstract class Column {
             alignOverride = cellDetails.getColumn().getAlign();
         }
         
-        return align(cellDetails.getColumn().getWidth(), cellDetails.getRowHeight(), alignOverride, cellData);
+        return align(cellDetails.getColumn().getWidth(), cellDetails.getRowHeight(), alignOverride, cellData, space);
     }
-    
+
     public static List<String> align(int width, int height, AlignType align, String value) {
-        return aligner.align(width, height, align, value);
+    	return align(width, height, align, value, " ");
+    }
+
+    public static List<String> align(int width, int height, AlignType align, String value, String space) {
+        return aligner.align(width, height, align, value, space);
     }
     
     /**
