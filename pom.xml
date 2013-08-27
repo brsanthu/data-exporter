@@ -4,22 +4,56 @@
 	<groupId>com.brsanthu</groupId>
 	<artifactId>data-exporter</artifactId>
 	<name>data-exporter</name>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<url>https://github.com/brsanthu/data-exporter</url>
+
+	<properties>
+		<java-version>1.6</java-version>
+		<slf4j-version>1.7.5</slf4j-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<inherited>true</inherited>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<useDefaultManifestFile>true</useDefaultManifestFile>
 					<archive>
@@ -31,25 +65,39 @@
 					</archive>
 				</configuration>
 			</plugin>
+
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.15</version>
+				<configuration>
+					<surefire.useFile>false</surefire.useFile>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<configuration>
+					<manifestLocation>META-INF</manifestLocation>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Import-Package>*;version=!</Import-Package>
+					</instructions>
+				</configuration>
 				<executions>
 					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
 						<goals>
-							<goal>jar</goal>
-							<goal>test-jar</goal>
+							<goal>manifest</goal>
 						</goals>
 					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
 					<execution>
+						<id>bundle</id>
+						<phase>package</phase>
 						<goals>
-							<goal>jar</goal>
+							<goal>bundle</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -75,11 +123,12 @@
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.3</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -93,6 +142,21 @@
 			<version>0.3.4</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.5</version>
+		</dependency>
 	</dependencies>
 	<description>data-exporter is a Java library to export the tabular data (like List of rows) into many output formats. As of latest release, this library supports following formats.</description>
 	<organization>
@@ -104,6 +168,8 @@
 		<url>https://javaserverfaces.dev.java.net/servlets/ProjectIssues</url>
 	</issueManagement>
 	<scm>
-		<url>https://github.com/brsanthu/data-exporter.git</url>
+		<connection>scm:git:git@github.com:brsanthu/data-exporter.git</connection>
+		<developerConnection>scm:git:git@github.com:brsanthu/data-exporter.git</developerConnection>
+		<url>git@github.com:brsanthu/data-exporter.git</url>
 	</scm>
 </project>

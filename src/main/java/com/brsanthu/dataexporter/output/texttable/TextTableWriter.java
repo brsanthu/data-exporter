@@ -139,7 +139,7 @@ public class TextTableWriter extends AbstractDataWriter {
     }
 
     public int getMaxRowHeight(RowDetails rowDetails) {
-        int height = 0;
+        int height = 1;
         for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
             CellDetails cellDetails = new CellDetails(rowDetails, columnIndex);
             Column column = columns.get(columnIndex);

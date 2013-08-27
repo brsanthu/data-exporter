@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.brsanthu.dataexporter.model.BeanRow;
 import com.brsanthu.dataexporter.model.CellDetails;
@@ -58,6 +58,10 @@ public abstract class DataWriter {
         
         this.options = options;
         this.out = new PrintWriter(out);
+    }
+    
+    public void setOutputStream(PrintWriter out) {
+    	this.out = out;
     }
     
     /**
@@ -174,7 +178,7 @@ public abstract class DataWriter {
     }
 
     protected void print(String value) {
-        out.print(options.isEscapeHtml()?StringEscapeUtils.escapeHtml(value):value);
+        out.print(options.isEscapeHtml()?StringEscapeUtils.escapeHtml4(value):value);
         
         if (autoFlush) {
             out.flush();
@@ -182,7 +186,7 @@ public abstract class DataWriter {
     }
     
     protected void println(String value) {
-        out.print(options.isEscapeHtml()?StringEscapeUtils.escapeHtml(value):value);
+        out.print(options.isEscapeHtml()?StringEscapeUtils.escapeHtml4(value):value);
         println();
         
         if (autoFlush) {

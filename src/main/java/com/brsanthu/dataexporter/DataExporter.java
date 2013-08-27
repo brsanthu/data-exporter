@@ -1,6 +1,7 @@
 package com.brsanthu.dataexporter;
 
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +41,9 @@ public abstract class DataExporter {
         table.setCallback(callback);
     }
 
-
+    public void setOutputStream(PrintWriter out) {
+    	dataWriter.setOutputStream(out);
+    }
 
     /**
      * Returns the currently assigned {@link DataWriter}

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 
 import com.brsanthu.dataexporter.model.BooleanColumn;
@@ -29,6 +29,9 @@ public class DataExporterTestBase {
     
     @Before
     public void setup() {
+    	if (exporter == null) {
+    		return;
+    	}
         exporter.addColumns(
             new LineNumberColumn("lineNo", "Line No", 5),
             new DateColumn("datePurchased", "Date Purchased", 23, "yyyy/MM/dd hh:mm:ss a"), 

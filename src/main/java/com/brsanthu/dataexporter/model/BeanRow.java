@@ -21,4 +21,8 @@ public class BeanRow extends Row {
                 + " from bean " + bean +  " of type " + bean.getClass().getName(), e);
         }
     }
+    
+    public Object getBean() {
+		return bean;
+	}
 }

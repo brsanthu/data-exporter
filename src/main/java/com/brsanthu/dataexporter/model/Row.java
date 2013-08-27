@@ -11,6 +11,7 @@ import java.util.List;
 public class Row {
     
     private List<Object> cells = new ArrayList<Object>();
+    private List<Row> children = null;
     
     public Row() {
         //Default Constructor
@@ -69,4 +70,20 @@ public class Row {
     public List<Object> getCellValues() {
         return cells;
     }
+
+	public List<Row> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<Row> children) {
+		this.children = children;
+	}
+	
+	public void addChild(Row child) {
+		if (children == null) {
+			children = new ArrayList<Row>();
+		}
+		
+		children.add(child);
+	}
 }

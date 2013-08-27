@@ -3,7 +3,7 @@ package com.brsanthu.dataexporter.output.html;
 import java.io.OutputStream;
 import java.io.Writer;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.brsanthu.dataexporter.AbstractDataWriter;
 import com.brsanthu.dataexporter.model.AlignType;
@@ -99,7 +99,7 @@ public class HtmlWriter extends AbstractDataWriter {
     
     @Override
     public void writeRowCell(CellDetails cellDetails) {
-        print(StringEscapeUtils.escapeHtml(cellDetails.getColumn().format(cellDetails)));
+        print(StringEscapeUtils.escapeHtml4(cellDetails.getColumn().format(cellDetails)));
     }
 
     @Override

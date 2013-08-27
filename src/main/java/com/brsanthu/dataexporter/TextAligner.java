@@ -166,7 +166,7 @@ public class TextAligner {
         if (data == null) {
             data = "";
         } else {
-            data = data.trim();
+            //data = data.trim();
         }
         
         int totalChars = width * height;

@@ -3,7 +3,7 @@ package com.brsanthu.dataexporter.model.json;
 import java.io.OutputStream;
 import java.io.Writer;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.brsanthu.dataexporter.AbstractDataWriter;
 import com.brsanthu.dataexporter.model.CellDetails;

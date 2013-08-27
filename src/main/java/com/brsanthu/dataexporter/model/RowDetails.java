@@ -11,7 +11,7 @@ public class RowDetails {
     private Table table = null;
     private int rowIndex = 0;
     private Row row = null;
-    private int rowHeight = 0;
+    private int rowHeight = 1;
     
     public RowDetails() {
         //do nothing
