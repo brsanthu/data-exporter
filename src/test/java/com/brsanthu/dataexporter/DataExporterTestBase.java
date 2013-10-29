@@ -22,6 +22,8 @@ import com.brsanthu.dataexporter.model.StringColumn;
 
 import static org.junit.Assert.*;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 public class DataExporterTestBase {
     protected DataExporter exporter = null;
     protected StringWriter sw = new StringWriter();
@@ -69,10 +71,22 @@ public class DataExporterTestBase {
     }
 
     protected void compareText(String file, String text) throws IOException {
+    	compareText(null, file, text);
+    }
+    
+    protected void compareText(String message, String file, String text) throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream(file);
         assertNotNull("Couldn't read the reference template", inputStream);
         
         String expected = IOUtils.toString(inputStream);
+        System.out.println("---------------------------------------------------------------------------");
+        if (isNotEmpty(message)) {
+        	System.out.println("\nExpected (" + message + "/" + file + ")\n"+ expected);
+        } else {
+        	System.out.println("\nExpected (" +  file + ")\n"+ expected);
+        }
+        System.out.println("\nProduced:\n"+ text);
+        
         expected = StringUtils.replace(expected, "\r\n", "\n");
         text = StringUtils.replace(text, "\r\n", "\n");
         assertEquals(expected.trim(), text.trim());

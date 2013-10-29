@@ -5,6 +5,11 @@ import java.io.Writer;
 
 import com.brsanthu.dataexporter.DataExporter;
 
+/**
+ * Tree Exporter is not fully tested so things may change in subsequent versions.
+ * 
+ * @author kumarsa
+ */
 public class TreeExporter extends DataExporter {
 
     public TreeExporter(OutputStream out) {

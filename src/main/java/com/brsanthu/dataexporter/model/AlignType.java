@@ -13,7 +13,7 @@ public enum AlignType {
     MIDDLE_CENTER ("middle", "center"),
     MIDDLE_RIGHT ("middle", "right"),
     BOTTOM_LEFT ("bottom", "left"),
-    BOTTOM_CENTER ("bottom", "left"),
+    BOTTOM_CENTER ("bottom", "center"),
     BOTTOM_RIGHT  ("bottom", "right");
     
     private String horAlign = null;
@@ -30,5 +30,15 @@ public enum AlignType {
 
     public String getVerticalAlignment() {
     	return verAlign;
+    }
+    
+    public boolean isLeft() {
+    	return horAlign.equals("left");
+    }
+    public boolean isCenter() {
+    	return horAlign.equals("center");
+    }
+    public boolean isRight() {
+    	return horAlign.equals("right");
     }
 }

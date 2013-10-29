@@ -1,9 +1,11 @@
 package com.brsanthu.dataexporter.output.texttable;
 
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 
 import org.junit.Test;
 
+import com.brsanthu.dataexporter.DataExporter;
 import com.brsanthu.dataexporter.DataExporterTestBase;
 import com.brsanthu.dataexporter.model.AbstractDataExporterCallback;
 import com.brsanthu.dataexporter.model.AlignType;
@@ -134,4 +136,33 @@ public class TextTableExporterTest extends DataExporterTestBase {
         }
     }
     
+    /**
+     * This is the test case for github issue#1.
+     */
+    @Test
+	public void testtIssue1() throws Exception {
+    	
+    	//Essentially if data fits into the cell, whatever the alignment you give, it shoudln't matter
+    	//should produce same result.
+    	for (AlignType alignType : AlignType.values()) {
+        	
+    		StringWriter sw = new StringWriter();
+    		DataExporter exporter = new TextTableExporter(sw);
+
+    		exporter.addColumns(new StringColumn("col1", 20), new StringColumn("col2", 50, alignType));
+        	exporter.startExporting();
+        	exporter.addRow("test", "test with a string of less than 50 chars");
+        	exporter.finishExporting();
+        	
+        	if (alignType.isLeft()) {
+        		compareText("Align:" + alignType, "testIssue1LeftAlign.txt", sw.toString());
+        		
+        	} else if (alignType.isCenter()) {
+        		compareText("Align:" + alignType, "testIssue1CenterAlign.txt", sw.toString());
+        		
+        	} else {
+        		compareText("Align:" + alignType, "testIssue1RightAlign.txt", sw.toString());
+        	}
+		}
+	}
 }

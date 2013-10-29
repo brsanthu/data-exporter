@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.brsanthu.dataexporter.AbstractDataWriter;
+import com.brsanthu.dataexporter.TextAligner;
 import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.CellDetails;
 import com.brsanthu.dataexporter.model.Column;
@@ -140,6 +141,7 @@ public class TextTableWriter extends AbstractDataWriter {
 
     public int getMaxRowHeight(RowDetails rowDetails) {
         int height = 1;
+        TextAligner textAligner = new TextAligner();
         for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
             CellDetails cellDetails = new CellDetails(rowDetails, columnIndex);
             Column column = columns.get(columnIndex);
@@ -152,7 +154,8 @@ public class TextTableWriter extends AbstractDataWriter {
             }
             cellDetails.setCellValue(cellValue);
             
-            height = Math.max(height, column.getMaxRowHeight(cellDetails));
+            //height = Math.max(height, column.getMaxRowHeight(cellDetails));
+            height = Math.max(height, textAligner.getRowHeight(cellDetails.getColumn().getWidth(), String.valueOf(cellDetails.getCellValue()), cellDetails.getCellAlign()));
         }
         
         return height;

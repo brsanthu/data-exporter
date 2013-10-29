@@ -139,6 +139,18 @@ import com.brsanthu.dataexporter.util.Util;
  */
 public class TextAligner {
     
+	public int getRowHeight(int width, String data, AlignType alignType) {
+		List<String> alignedStrings = align(width, data.length(), alignType, data);
+		int rowHeight = 0;
+		for (String line : alignedStrings) {
+			if (line.trim().length() > 0) {
+				rowHeight++;
+			}
+		}
+		
+		return Math.max(1, rowHeight);
+	}
+	
     /**
      * Aligns the given text according to requested alignment and returns the list of strings.
      * 
@@ -152,21 +164,16 @@ public class TextAligner {
     public List<String> align(int width, int height, AlignType align, String data) {
     	return align(width, height, align, data, " ");
     }
-
+    
 	public List<String> align(int width, int height, AlignType align, String data, String space) {
-        
+        Util.checkForNotNull(align, "align");
+		
         if (height <= 0 || width <= 0) {
             throw new IllegalArgumentException("Height or width cannot be less than or equal to zero.");
         }
         
-        if (align == null) {
-            throw new IllegalArgumentException("Parameter align cannot be null");
-        }
-        
         if (data == null) {
             data = "";
-        } else {
-            //data = data.trim();
         }
         
         int totalChars = width * height;
@@ -176,141 +183,184 @@ public class TextAligner {
                 + height + ")");
         }
         
-        //Split at the word boundary
-        String[] words = data.split("\\s");
-        
-        //Check if any word is bigger than the width. If so, split into multiple words.
-        List<String> wordsFinal = new ArrayList<String>();
-        for (String word : words) {
-            if (word.trim().length() >= width) {
-                wordsFinal.addAll(splitWord(word, width));
-            } else {
-                wordsFinal.add(word.trim());
-            }
-        }
-        
-        List<String> compacted = new ArrayList<String>();
         //If number of words are larger than height, compact to at least height.
         //Compacting happens starting at top, middle or bottom as requested
-        StringBuilder sb = new StringBuilder();
-        int numerOfFillers = 0;
+        List<String> compacted = new ArrayList<String>();
         
-        switch (align) {
-            case TOP_LEFT:
-            case TOP_CENTER:
-            case TOP_RIGHT:
-                for (int i = 0; i < wordsFinal.size(); i++) {
-                    //See if this word could be joined with previous string and still fits
-                    //in the width
-                    if (sb.length() + wordsFinal.get(i).length() <= width) {
-                        if (sb.length() > 0) {
-                            sb.append(" ");
-                        }
-                        sb.append(wordsFinal.get(i));
-                    } else {
-                        compacted.add(sb.toString());
-                        sb = new StringBuilder();
-                        sb.append(wordsFinal.get(i));
-                    }
-                }
-                if (sb.length() > 0) {
-                   compacted.add(sb.toString());
-                }
-
-                //We may need to add filler lines at the end of the list.
-                numerOfFillers = height - compacted.size();
-                for (int i = 0; i < numerOfFillers; i++) {
-                    compacted.add("");
-                }
-                break;
-                
-            case MIDDLE_LEFT:
-            case MIDDLE_CENTER:
-            case MIDDLE_RIGHT:
-                
-                //Compact mid way towards beginning
-                int midwayIndex = (int) Math.ceil((float) wordsFinal.size()/2);
-                if (midwayIndex >= wordsFinal.size()) {
+        //If the data length is less than column width, then there is nothing to compact.
+        //Issue# 1
+        if (data.length() <= width) {
+        	
+        	switch(align) {
+			case TOP_CENTER:
+			case TOP_LEFT:
+			case TOP_RIGHT:
+	        	compacted.add(data);
+	        	for (int i = 0; i < height - 1; i++) {
+					compacted.add("");
+				}
+				break;
+				
+			case MIDDLE_CENTER:
+			case MIDDLE_LEFT:
+			case MIDDLE_RIGHT:
+                int midwayIndex = (int) Math.ceil((float) height/2) - 1;
+                if (midwayIndex >= height) {
                     midwayIndex--;
                 }
-                
-                for (int i = midwayIndex; i >= 0; i--) {
-                    //See if this word could be joined with previous string and still fits
-                    //in the widths
-                    if (sb.length() + wordsFinal.get(i).length() <= width - 1) {
-                        if (sb.length() > 0) {
-                            sb.insert(0, " ");
-                        }
-                        sb.insert(0, wordsFinal.get(i));
-                    } else {
-                        compacted.add(0, sb.toString());
-                        sb = new StringBuilder();
-                        sb.insert(0, wordsFinal.get(i));
-                    }
-                }
-                if (sb.length() > 0) {
-                   compacted.add(0, sb.toString());
-                }
+	        	for (int i = 0; i < midwayIndex; i++) {
+					compacted.add("");
+				}
+	        	compacted.add(data);
+	        	for (int i = midwayIndex + 1; i < height; i++) {
+					compacted.add("");
+				}
+				break;
 
-                sb = new StringBuilder();
-                //Compact mid way towards beginning
-                for (int i = midwayIndex + 1; i < wordsFinal.size(); i++) {
-                    //See if this word could be joined with previous string and still fits
-                    //in the width
-                    if (sb.length() + wordsFinal.get(i).length() <= width) {
-                        if (sb.length() > 0) {
-                            sb.append(" ");
-                        }
-                        sb.append(wordsFinal.get(i));
-                    } else {
-                        compacted.add(sb.toString());
-                        sb = new StringBuilder();
-                        sb.append(wordsFinal.get(i));
-                    }
+			case BOTTOM_CENTER:
+			case BOTTOM_LEFT:
+			case BOTTOM_RIGHT:
+	        	for (int i = 0; i < height - 1; i++) {
+					compacted.add("");
+				}
+	        	compacted.add(data);
+				break;
+        	}
+        	
+        } else {
+            //Split at the word boundary
+            String[] words = data.split("\\s");
+            
+            //Check if any word is bigger than the width. If so, split into multiple words.
+            List<String> wordsFinal = new ArrayList<String>();
+            for (String word : words) {
+                if (word.trim().length() >= width) {
+                    wordsFinal.addAll(splitWord(word, width));
+                } else {
+                    wordsFinal.add(word.trim());
                 }
-                if (sb.length() > 0) {
-                   compacted.add(sb.toString());
-                }
+            }
 
-                //We may need to add filler lines at beginning and as well at the end.
-                numerOfFillers = Math.max(0, height - compacted.size()) / 2; 
-                for (int i = 0; i < numerOfFillers; i++) {
-                    compacted.add(0, "");
-                }
-                
-                numerOfFillers = height - compacted.size();
-                for (int i = 0; i < numerOfFillers; i++) {
-                    compacted.add("");
-                }
-                break;
-
-            case BOTTOM_LEFT:
-            case BOTTOM_CENTER:
-            case BOTTOM_RIGHT:
-                for (int i = wordsFinal.size() - 1; i >= 0; i--) {
-                    //See if this word could be joined with previous string and still fits
-                    //in the widths
-                    if (sb.length() + wordsFinal.get(i).length() <= width - 1) {
-                        if (sb.length() > 0) {
-                            sb.insert(0, " ");
-                        }
-                        sb.insert(0, wordsFinal.get(i));
-                    } else {
-                        compacted.add(0, sb.toString());
-                        sb = new StringBuilder();
-                        sb.insert(0, wordsFinal.get(i));
-                    }
-                }
-                if (sb.length() > 0) {
-                   compacted.add(0, sb.toString());
-                }
-                
-                numerOfFillers = height - compacted.size();
-                for (int i = 0; i < numerOfFillers; i++) {
-                    compacted.add(0, "");
-                }
-                
-                break;
+            StringBuilder sb = new StringBuilder();
+	        int numerOfFillers = 0;
+	        
+	        switch (align) {
+	            case TOP_LEFT:
+	            case TOP_CENTER:
+	            case TOP_RIGHT:
+	                for (int i = 0; i < wordsFinal.size(); i++) {
+	                    //See if this word could be joined with previous string and still fits
+	                    //in the width
+	                    if ((sb.length()==0?0: sb.length() + 1) + wordsFinal.get(i).length() <= width) {
+	                        if (sb.length() > 0) {
+	                            sb.append(" ");
+	                        }
+	                        sb.append(wordsFinal.get(i));
+	                    } else {
+	                        compacted.add(sb.toString());
+	                        sb = new StringBuilder();
+	                        sb.append(wordsFinal.get(i));
+	                    }
+	                }
+	                if (sb.length() > 0) {
+	                   compacted.add(sb.toString());
+	                }
+	
+	                //We may need to add filler lines at the end of the list.
+	                numerOfFillers = height - compacted.size();
+	                for (int i = 0; i < numerOfFillers; i++) {
+	                    compacted.add("");
+	                }
+	                break;
+	                
+	            case MIDDLE_LEFT:
+	            case MIDDLE_CENTER:
+	            case MIDDLE_RIGHT:
+	                
+	                //Compact mid way towards beginning
+	                int midwayIndex = (int) Math.ceil((float) wordsFinal.size()/2);
+	                if (midwayIndex >= wordsFinal.size()) {
+	                    midwayIndex--;
+	                }
+	                
+	                for (int i = midwayIndex; i >= 0; i--) {
+	                    //See if this word could be joined with previous string and still fits
+	                    //in the widths
+	                    if (sb.length() + wordsFinal.get(i).length() <= width - 1) {
+	                        if (sb.length() > 0) {
+	                            sb.insert(0, " ");
+	                        }
+	                        sb.insert(0, wordsFinal.get(i));
+	                    } else {
+	                        compacted.add(0, sb.toString());
+	                        sb = new StringBuilder();
+	                        sb.insert(0, wordsFinal.get(i));
+	                    }
+	                }
+	                if (sb.length() > 0) {
+	                   compacted.add(0, sb.toString());
+	                }
+	
+	                sb = new StringBuilder();
+	                //Compact mid way towards beginning
+	                for (int i = midwayIndex + 1; i < wordsFinal.size(); i++) {
+	                    //See if this word could be joined with previous string and still fits
+	                    //in the width
+	                    if (sb.length() + wordsFinal.get(i).length() <= width) {
+	                        if (sb.length() > 0) {
+	                            sb.append(" ");
+	                        }
+	                        sb.append(wordsFinal.get(i));
+	                    } else {
+	                        compacted.add(sb.toString());
+	                        sb = new StringBuilder();
+	                        sb.append(wordsFinal.get(i));
+	                    }
+	                }
+	                if (sb.length() > 0) {
+	                   compacted.add(sb.toString());
+	                }
+	
+	                //We may need to add filler lines at beginning and as well at the end.
+	                numerOfFillers = Math.max(0, height - compacted.size()) / 2; 
+	                for (int i = 0; i < numerOfFillers; i++) {
+	                    compacted.add(0, "");
+	                }
+	                
+	                numerOfFillers = height - compacted.size();
+	                for (int i = 0; i < numerOfFillers; i++) {
+	                    compacted.add("");
+	                }
+	                break;
+	
+	            case BOTTOM_LEFT:
+	            case BOTTOM_CENTER:
+	            case BOTTOM_RIGHT:
+	                for (int i = wordsFinal.size() - 1; i >= 0; i--) {
+	                    //See if this word could be joined with previous string and still fits
+	                    //in the widths
+	                    if (sb.length() + wordsFinal.get(i).length() <= width - 1) {
+	                        if (sb.length() > 0) {
+	                            sb.insert(0, " ");
+	                        }
+	                        sb.insert(0, wordsFinal.get(i));
+	                    } else {
+	                        compacted.add(0, sb.toString());
+	                        sb = new StringBuilder();
+	                        sb.insert(0, wordsFinal.get(i));
+	                    }
+	                }
+	                if (sb.length() > 0) {
+	                   compacted.add(0, sb.toString());
+	                }
+	                
+	                numerOfFillers = height - compacted.size();
+	                for (int i = 0; i < numerOfFillers; i++) {
+	                    compacted.add(0, "");
+	                }
+	                
+	                break;
+	        }
         }
         
         List<String> aligned = new ArrayList<String>();
