@@ -9,7 +9,7 @@
 
 	<groupId>com.brsanthu</groupId>
 	<artifactId>data-exporter</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.4-SNAPSHOT</version>
 
 	<properties>
 		<java-version>1.6</java-version>
