@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -210,7 +209,7 @@
 		<url>https://github.com/brsanthu/data-exporter</url>
 		<connection>scm:git:git@github.com:brsanthu/data-exporter</connection>
 		<developerConnection>scm:git:git@github.com:brsanthu/data-exporter</developerConnection>
-		<tag>HEAD</tag>
+		<tag>data-exporter-1.0.4</tag>
 	</scm>
 	<issueManagement>
 		<system>github.com</system>
