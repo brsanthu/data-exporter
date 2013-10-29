@@ -184,7 +184,7 @@ public class TextAligner {
     	return align(width, height, align, data, " ");
     }
     
-	public List<String> align(int width, int height, AlignType align, String data, String space) {
+	public List<String> align(int width, int height, AlignType align, String data, String filler) {
         Util.checkForNotNull(align, "align");
 		
         if (height <= 0 || width <= 0) {

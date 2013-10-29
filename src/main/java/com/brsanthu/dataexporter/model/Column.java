@@ -201,16 +201,14 @@ public abstract class Column {
      * 
      * @param cellDetails the object containing the details about this cell
      * @param cellData the string which should be aligned
-	 * @param space the space character to use when aligning
      * 
      * @return the <code>ArrayList</code> containing the Strings split and aligned as per <code>cellDetails</code>
      */
-    
     public List<String> align(CellDetails cellDetails, String cellData) {
     	return align(cellDetails, cellData, " ");
     }
     	
-    public List<String> align(CellDetails cellDetails, String cellData, String space) {
+    public List<String> align(CellDetails cellDetails, String cellData, String filler) {
         
         AlignType alignOverride = cellDetails.getCellAlign();
         
@@ -218,15 +216,15 @@ public abstract class Column {
             alignOverride = cellDetails.getColumn().getAlign();
         }
         
-        return align(cellDetails.getColumn().getWidth(), cellDetails.getRowHeight(), alignOverride, cellData, space);
+        return align(cellDetails.getColumn().getWidth(), cellDetails.getRowHeight(), alignOverride, cellData, filler);
     }
 
     public static List<String> align(int width, int height, AlignType align, String value) {
     	return align(width, height, align, value, " ");
     }
 
-    public static List<String> align(int width, int height, AlignType align, String value, String space) {
-        return aligner.align(width, height, align, value, space);
+    public static List<String> align(int width, int height, AlignType align, String value, String filler) {
+        return aligner.align(width, height, align, value, filler);
     }
     
     /**
